@@ -17,7 +17,8 @@
             <nav aria-label="Global" class="hidden md:block">
                 <ul class="flex items-center gap-6 text-sm">
                     <li>
-                        <a class="font-bold text-xl text-gray-500 transition hover:text-gray-500/75" href="#">
+                        <a class="font-bold text-xl text-gray-500 transition hover:text-gray-500/75"
+                           href="{{route("posts.index")}}">
                             ITI Blogs
                         </a>
                     </li>

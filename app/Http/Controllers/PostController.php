@@ -2,93 +2,67 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Post;
+use App\Models\User;
+use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
+
 class PostController extends Controller
 {
     public function index()
     {
-        $posts = [
-            [
-                'id' => 1,
-                'title' => 'Post1',
-                'description' => 'post description',
-                'creator' => [
-                    "id" => 1,
-                    'name' => 'Mohamed',
-                    'email' => 'mw@mw.com',
-                    'created_at' => '2026-03-11 13:59:00',
-                ],
-                'created_at' => '2026-03-11 13:59:00',
-            ],
-            [
-                'id' => 1,
-                'title' => 'Post2',
-                'description' => 'post description 2',
-                'creator' => [
-                    "id" => 2,
-                    'name' => 'Ahmed',
-                    'email' => 'ahmed@mw.com',
-                    'created_at' => '2026-03-11 13:59:00',
-                ],
-                'created_at' => '2026-03-11 13:59:00',
-            ],
-
-        ];
-
-        return view('posts.index', ['posts' => $posts]);
+        $posts = Post::paginate(5);
+        return view('posts.index', compact("posts"));
     }
 
-    public function show()
+    public function show(Post $post)
     {
-        $innerPost = [
-            'id' => 1,
-            'title' => 'Post2',
-            'description' => 'post description 2',
-            'creator' => [
-                "id" => 2,
-                'name' => 'Ahmed',
-                'email' => 'ahmed@mw.com',
-                'created_at' => '2026-03-11 13:59:00',
-            ],
-            'created_at' => '2026-03-11 13:59:00',
-        ];
 
-        return view('posts.show', ['post' => $innerPost]);
+        $post->load("comments.user");
+        return view('posts.show', compact('post'));
     }
 
-    public function destroy($postId)
+    public function destroy(Post $post)
     {
+        $post->delete();
         return to_route('posts.index');
     }
 
     public function create()
     {
-        return view('posts.create');
+        $users = User::all();
+        return view('posts.create', compact('users'));
     }
 
     public function store()
     {
+        $title = request()->title;
+        $description = request()->description;
+        $userId = request()->user_id;
+        Post::create([
+            'title' => $title,
+            'description' => $description,
+            'user_id' => $userId,
+        ]);
         return to_route('posts.index');
     }
 
-    public function edit()
+    public function edit(Post $post)
     {
-        $innerPost = [
-            'id' => 1,
-            'title' => 'Post2',
-            'description' => 'post description 2',
-            'creator' => [
-                "id" => 2,
-                'name' => 'Ahmed',
-                'email' => 'ahmed@mw.com',
-                'created_at' => '2026-03-11 13:59:00',
-            ],
-            'created_at' => '2026-03-11 13:59:00',
-        ];
-        return view('posts.edit', ["post" => $innerPost]);
+        $users = User::all();
+        return view('posts.edit', compact('post', 'users'));
     }
 
-    public function update()
+    public function update(Request $request, Post $post)
     {
+        $validatedData = $request->validate(
+            [
+                "title" => "required|string|max:100",
+                "description" => "required|string",
+                "user_id" => 'required|integer'
+            ]
+        );
+        $post->update($validatedData);
         return to_route("posts.index");
     }
 }
