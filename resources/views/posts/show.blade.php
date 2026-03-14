@@ -24,7 +24,7 @@
                     </p>
 
                     <p class="text-gray-700 mt-2"><span class="font-semibold">Created At:</span>
-                        {{ $post->user->created_at ?? '' }}
+                        {{ $post->user?->created_at?->format("Y-m-d") ?? '' }}
                     </p>
                 </div>
             </div>
