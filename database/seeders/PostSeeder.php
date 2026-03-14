@@ -22,7 +22,8 @@ class PostSeeder extends Seeder
                 Comment::factory(3)->state(fn(array $attributes, Post $post) => [
                     'user_id' => $users->random()->id,
                 ]),
-                "comments")
+                "comments"
+            )
             ->create();
     }
 }

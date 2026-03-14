@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use Cviebrock\EloquentSluggable\Sluggable;
 use Database\Factories\PostFactory;
 use Illuminate\Database\Eloquent\Attributes\UseFactory;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
@@ -14,8 +15,12 @@ class Post extends Model
 {
     use  HasFactory;
     use SoftDeletes;
+    use Sluggable;
 
-    protected $fillable = ["title", "description", "user_id",
+    protected $fillable = [
+        "title",
+        "description",
+        "user_id",
         'body'
     ];
 
@@ -27,5 +32,19 @@ class Post extends Model
     function comments(): MorphMany
     {
         return $this->morphMany(Comment::class, 'commentable');
+    }
+
+    public function sluggable(): array
+    {
+        return [
+            "slug" => [
+                "source" => ["title"]
+            ]
+        ];
+    }
+
+    public function getRouteKeyName()
+    {
+        return "slug";
     }
 }
