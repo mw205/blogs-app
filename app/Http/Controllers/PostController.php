@@ -2,6 +2,8 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Requests\StorePostRequest;
+use App\Http\Requests\UpdatePostRequest;
 use App\Models\Post;
 use App\Models\User;
 use Illuminate\Http\Request;
@@ -17,7 +19,6 @@ class PostController extends Controller
 
     public function show(Post $post)
     {
-
         $post->load("comments.user");
         return view('posts.show', compact('post'));
     }
@@ -34,7 +35,13 @@ class PostController extends Controller
         return view('posts.create', compact('users'));
     }
 
-    public function store()
+    public function restore()
+    {
+        Post::onlyTrashed()->restore();
+        return to_route('posts.index');
+    }
+
+    public function store(StorePostRequest $request)
     {
         $title = request()->title;
         $description = request()->description;
@@ -53,16 +60,16 @@ class PostController extends Controller
         return view('posts.edit', compact('post', 'users'));
     }
 
-    public function update(Request $request, Post $post)
+    public function update(UpdatePostRequest $request, Post $post)
     {
-        $validatedData = $request->validate(
-            [
-                "title" => "required|string|max:100",
-                "description" => "required|string",
-                "user_id" => 'required|integer'
-            ]
-        );
-        $post->update($validatedData);
+        $title = request()->title;
+        $description = request()->description;
+        $userId = request()->user_id;
+        $post->update([
+            "title" => $title,
+            "description" => $description,
+            "user_id" => $userId,
+        ]);
         return to_route("posts.index");
     }
 }

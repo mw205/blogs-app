@@ -8,35 +8,48 @@
                     <span class="text-md font-medium text-gray-700"> Title </span>
 
                     <input type="text" name="title" id="Title"
-                           class="p-2 mt-1.5 w-full rounded border-gray-300 shadow-sm sm:text-sm"
-                           value="{{old("title", $post->title)}}">
+                        class="p-2 mt-1.5 w-full rounded border-gray-300 shadow-sm sm:text-sm"
+                        value="{{old("title", $post->title)}}">
+
+                    @error('title')
+                        <p class="mt-1 text-sm text-red-600">
+                            {{ $message }}
+                        </p>
+                    @enderror
                 </label>
                 <label for="Description">
                     <span class="text-sm font-medium text-gray-700"> Description </span>
 
-                    <textarea id="Description"
-                              name="description"
-                              class="p-2  mt-1.5 w-full resize-none rounded border-gray-300 shadow-sm sm:text-sm"
-                              rows="4">{{ old("description", $post->description) }}</textarea>
+                    <textarea id="Description" name="description"
+                        class="p-2  mt-1.5 w-full resize-none rounded border-gray-300 shadow-sm sm:text-sm"
+                        rows="4">{{ old("description", $post->description) }}</textarea>
+                    @error('description')
+                        <p class="mt-1 text-sm text-red-600">
+                            {{ $message }}
+                        </p>
+                    @enderror
                 </label>
                 <label for="Creator">
                     <span class="text-sm font-medium text-gray-700"> Post Creator </span>
 
                     <select name="user_id" id="Creator"
-                            class="p-2 mt-1.5 w-full rounded border-gray-300 shadow-sm sm:text-sm">
+                        class="p-2 mt-1.5 w-full rounded border-gray-300 shadow-sm sm:text-sm">
                         <option value="">Please select</option>
                         @foreach($users as $user)
-                            <option
-                                value="{{$user->id}}" @selected(old('creator_id', $post->user->id) == $user->id)>{{ $user->name }}
+                            <option value="{{$user->id}}" @selected(old('creator_id', $post->user->id) == $user->id)>
+                                {{ $user->name }}
                             </option>
                         @endforeach
-
-
+                        @error('title')
+                            <p class="mt-1 text-sm text-red-600">
+                                {{ $message }}
+                            </p>
+                        @enderror
                     </select>
                 </label>
                 <div class="flex justify-center m-5">
                     <button type="submit"
-                            class="inline-block rounded-sm border border-b-green-500-600 bg-green-600 px-12 py-3 text-sm font-medium text-white hover:bg-transparent hover:text-green-600">
+                        class="inline-block rounded-sm border border-b-green-500-600 bg-green-600 px-12 py-3 text-sm font-medium text-white hover:bg-transparent hover:text-green-600">
                         Edit Post
                     </button>
                 </div>
