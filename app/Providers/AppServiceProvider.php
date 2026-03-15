@@ -2,8 +2,7 @@
 
 namespace App\Providers;
 
-use Illuminate\Database\Eloquent\Relations\Relation;
-use Illuminate\Pagination\Paginator;
+use Illuminate\Support\Facades\Vite;
 use Illuminate\Support\ServiceProvider;
 
 class AppServiceProvider extends ServiceProvider
@@ -21,9 +20,6 @@ class AppServiceProvider extends ServiceProvider
      */
     public function boot(): void
     {
-        Relation::morphMap(
-            ["post" => 'App\Models\Post']
-        );
-        Paginator::useTailwind();
+        Vite::prefetch(concurrency: 3);
     }
 }

@@ -2,10 +2,13 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Requests\StorePostRequest;
+use App\Http\Requests\UpdatePostRequest;
 use App\Models\Post;
 use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Storage;
 
 class PostController extends Controller
 {
@@ -17,7 +20,6 @@ class PostController extends Controller
 
     public function show(Post $post)
     {
-
         $post->load("comments.user");
         return view('posts.show', compact('post'));
     }
@@ -34,16 +36,22 @@ class PostController extends Controller
         return view('posts.create', compact('users'));
     }
 
-    public function store()
+    public function restore()
     {
-        $title = request()->title;
-        $description = request()->description;
-        $userId = request()->user_id;
-        Post::create([
-            'title' => $title,
-            'description' => $description,
-            'user_id' => $userId,
-        ]);
+        Post::onlyTrashed()->restore();
+        return to_route('posts.index');
+    }
+
+    public function store(StorePostRequest $request)
+    {
+        // $title = request()->title;
+        // $description = request()->description;
+        // $userId = request()->user_id;
+        $data = $request->validated();
+        if ($request->hasFile("post_image")) {
+            $data['post_image'] = $request->file("post_image")->store("posts", "public");
+        }
+        Post::create($data);
         return to_route('posts.index');
     }
 
@@ -53,16 +61,17 @@ class PostController extends Controller
         return view('posts.edit', compact('post', 'users'));
     }
 
-    public function update(Request $request, Post $post)
+    public function update(UpdatePostRequest $request, Post $post)
     {
-        $validatedData = $request->validate(
-            [
-                "title" => "required|string|max:100",
-                "description" => "required|string",
-                "user_id" => 'required|integer'
-            ]
-        );
-        $post->update($validatedData);
+        $data = $request->validated();
+        if ($request->hasFile("post_image")) {
+
+            if ($post->post_image) {
+                Storage::disk("public")->delete($post->post_image);
+            }
+            $data["post_image"] = $request->file("post_image")->store("posts", "public");
+        }
+        $post->update($data);
         return to_route("posts.index");
     }
 }
