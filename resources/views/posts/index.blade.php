@@ -35,16 +35,16 @@
                             <td class="px-3 py-2 whitespace-nowrap">{{ $post->created_at->format("Y-m-d") }}</td>
                             <td class="px-3 py-2 whitespace-nowrap">
                                 <a class="inline-block rounded-sm border border-teal-600 bg-teal-600 px-3 py-2 text-sm font-medium text-white hover:bg-transparent hover:text-teal-600"
-                                    href="{{ route('posts.show', $post->id) }}">
+                                    href="{{ route('posts.show', $post) }}">
                                     View
                                 </a>
                                 <a class="inline-block rounded-sm border border-blue-600 bg-blue-600 px-3 py-2 text-sm font-medium text-white hover:bg-transparent hover:text-blue-600"
-                                    href="{{route("posts.edit", $post->id)}}">
+                                    href="{{route("posts.edit", $post)}}">
                                     Edit
                                 </a>
                                 <button
                                     class="inline-block cursor-pointer rounded-sm border border-red-600 bg-red-600 px-3 py-2 text-sm font-medium text-white hover:bg-transparent hover:text-red-600"
-                                    onclick="confirmDelete({{ $post->id }})">
+                                    onclick="confirmDelete('{{ $post->slug }}')">
                                     Delete
                                 </button>
                             </td>
@@ -61,11 +61,11 @@
     <x-delete-confirm-modal />
 
     <script>
-        function confirmDelete(postId) {
+        function confirmDelete(postSlug) {
             const modal = document.getElementById('delete_modal');
             const form = document.getElementById('delete_form');
 
-            form.action = `/posts/${postId}`;
+            form.action = `/posts/${postSlug}`;
             modal.classList.remove('hidden');
             modal.classList.add('grid');
         }
