@@ -10,12 +10,11 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\MorphMany;
 use Illuminate\Database\Eloquent\SoftDeletes;
+use Laravel\Sanctum\HasApiTokens;
 
 class Post extends Model
 {
-    use  HasFactory;
-    use SoftDeletes;
-    use Sluggable;
+    use  HasFactory, SoftDeletes, Sluggable, HasApiTokens;
 
     protected $fillable = [
         "title",

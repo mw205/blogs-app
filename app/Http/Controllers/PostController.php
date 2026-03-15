@@ -44,9 +44,7 @@ class PostController extends Controller
 
     public function store(StorePostRequest $request)
     {
-        // $title = request()->title;
-        // $description = request()->description;
-        // $userId = request()->user_id;
+
         $data = $request->validated();
         if ($request->hasFile("post_image")) {
             $data['post_image'] = $request->file("post_image")->store("posts", "public");
